@@ -1,5 +1,19 @@
 {
   "dependencies": {
+    "com.jtfrom9.input-observable": {
+      "version": "https://github.com/jtfrom9/InputObservable.git?path=Assets/InputObservable#develop",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "48baf5b53200e95c96088d518fdb67eeb5b64031"
+    },
+    "com.neuecc.unirx": {
+      "version": "https://github.com/neuecc/UniRx.git?path=Assets/Plugins/UniRx/Scripts",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "284d5c50d3f1ddd9fa7df3d382ea904732a9c2ff"
+    },
     "com.unity.collab-proxy": {
       "version": "1.2.16",
       "depth": 0,
