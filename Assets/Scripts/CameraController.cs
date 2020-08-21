@@ -25,8 +25,14 @@ namespace ZView
                 .Subscribe(rot => {
                     Debug.Log($"rotation = {rot}");
                     if(Input.GetKey(KeyCode.LeftShift)) {
+                        // var q = Quaternion.Euler(rot);
+                        // float angle;
+                        // Vector3 axis;
+                        // q.ToAngleAxis(out angle, out axis);
+                        // transform.RotateAround(origin, axis,angle);
+                        // transform.RotateAround()
+                        // transform.RotateAround(origin, Vector3.right, rot.x);
                         transform.RotateAround(origin, Vector3.up, rot.y);
-                        transform.RotateAround(origin, Vector3.right, rot.x);
                     }else
                     {
                         transform.Rotate(rot);
