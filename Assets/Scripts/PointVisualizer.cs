@@ -2,11 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PointVisualizer : MonoBehaviour
+namespace ZView
 {
-    void Start()
+    public class PointVisualizer : MonoBehaviour
     {
-        MeshFilter meshFilter = GetComponent<MeshFilter>();
-        meshFilter.mesh.SetIndices(meshFilter.mesh.GetIndices(0), MeshTopology.Points, 0);
+        void Start()
+        {
+            MeshFilter meshFilter = GetComponent<MeshFilter>();
+            meshFilter.mesh.SetIndices(meshFilter.mesh.GetIndices(0), MeshTopology.Points, 0);
+        }
     }
 }

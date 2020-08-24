@@ -31,7 +31,7 @@ namespace ZView
                         // q.ToAngleAxis(out angle, out axis);
                         // transform.RotateAround(origin, axis,angle);
                         // transform.RotateAround()
-                        // transform.RotateAround(origin, Vector3.right, rot.x);
+                        transform.RotateAround(origin, Vector3.right, rot.x);
                         transform.RotateAround(origin, Vector3.up, rot.y);
                     }else
                     {

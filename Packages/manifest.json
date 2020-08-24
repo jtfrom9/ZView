@@ -4,7 +4,6 @@
     "com.google.firebase.database": "6.15.2",
     "com.jtfrom9.input-observable": "https://github.com/jtfrom9/InputObservable.git?path=Assets/InputObservable#develop",
     "com.jtfrom9.miguel12345.unity-shapes": "https://github.com/jtfrom9/UnityShapes.git?path=Assets/Shapes",
-    "com.neuecc.unirx": "https://github.com/neuecc/UniRx.git?path=Assets/Plugins/UniRx/Scripts",
     "com.unity.collab-proxy": "1.2.16",
     "com.unity.ide.rider": "1.1.4",
     "com.unity.ide.vscode": "1.2.1",
@@ -42,7 +41,9 @@
     "com.unity.modules.video": "1.0.0",
     "com.unity.modules.vr": "1.0.0",
     "com.unity.modules.wind": "1.0.0",
-    "com.unity.modules.xr": "1.0.0"
+    "com.unity.modules.xr": "1.0.0",
+    "com.neuecc.unirx": "7.1.0",
+    "com.cysharp.unitask": "2.0.30"
   },
   "scopedRegistries": [
     {
@@ -50,6 +51,15 @@
       "url": "https://unityregistry-pa.googleapis.com",
       "scopes": [
         "com.google"
+      ]
+    },
+    {
+      "name": "package.openupm.com",
+      "url": "https://package.openupm.com",
+      "scopes": [
+        "com.cysharp.unitask",
+        "com.neuecc.unirx",
+        "com.openupm"
       ]
     }
   ]

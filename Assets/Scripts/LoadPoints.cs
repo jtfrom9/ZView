@@ -5,55 +5,59 @@ using System;
 using System.Linq;
 using UnityEngine;
 
-public class LoadPoints : MonoBehaviour
+namespace ZView
 {
-    [SerializeField]
-    class Data
+    public class LoadPoints : MonoBehaviour
     {
         [SerializeField]
-        public List<Vector3> vertices = new List<Vector3>();
-    }
-
-    public string readText(string path)
-    {
-        string strStream = "";
-        try
+        class Data
         {
-            using (StreamReader sr = new StreamReader(Application.dataPath + path))
+            [SerializeField]
+            public List<Vector3> vertices = new List<Vector3>();
+        }
+
+        public string readText(string path)
+        {
+            string strStream = "";
+            try
             {
-                strStream = sr.ReadToEnd();
-                sr.Close();
+                using (StreamReader sr = new StreamReader(Application.dataPath + path))
+                {
+                    strStream = sr.ReadToEnd();
+                    sr.Close();
+                }
             }
+            catch (Exception e)
+            {
+                Debug.Log(e.Message);
+            }
+
+            return strStream;
         }
-        catch (Exception e)
+
+        Mesh genMesh(Data d)
         {
-            Debug.Log(e.Message);
+            var mesh = new Mesh();
+            mesh.SetVertices(d.vertices);
+            mesh.SetIndices(Enumerable.Range(0, d.vertices.Count).Select(x => x).ToArray(),
+                MeshTopology.Points,
+                0);
+            return mesh;
         }
 
-        return strStream;
-    }
+        void Start()
+        {
+            Debug.Log(Application.dataPath);
+            var json = readText("/vertex.json");
+            Debug.Log(json);
+            var d = JsonUtility.FromJson<Data>(json);
+            foreach (var p in d.vertices)
+            {
+                Debug.Log(p);
+            }
 
-    Mesh genMesh(Data d)
-    {
-        var mesh = new Mesh();
-        mesh.SetVertices(d.vertices);
-        mesh.SetIndices(Enumerable.Range(0, d.vertices.Count).Select(x => x).ToArray(),
-            MeshTopology.Points,
-            0);
-        return mesh;
-    }
-
-    void Start()
-    {
-        Debug.Log(Application.dataPath);
-        var json = readText("/vertex.json");
-        Debug.Log(json);
-        var d = JsonUtility.FromJson<Data>(json);
-        foreach(var p in d.vertices) {
-            Debug.Log(p);
+            var mf = GetComponent<MeshFilter>();
+            mf.sharedMesh = genMesh(d);
         }
-
-        var mf = GetComponent<MeshFilter>();
-        mf.sharedMesh = genMesh(d);
     }
 }

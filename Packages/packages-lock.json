@@ -1,5 +1,12 @@
 {
   "dependencies": {
+    "com.cysharp.unitask": {
+      "version": "2.0.30",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {},
+      "url": "https://package.openupm.com"
+    },
     "com.google.external-dependency-manager": {
       "version": "1.2.157",
       "depth": 0,
@@ -49,11 +56,11 @@
       "hash": "2c6216222c08d586b5a16ba76308497208b7beb8"
     },
     "com.neuecc.unirx": {
-      "version": "https://github.com/neuecc/UniRx.git?path=Assets/Plugins/UniRx/Scripts",
+      "version": "7.1.0",
       "depth": 0,
-      "source": "git",
+      "source": "registry",
       "dependencies": {},
-      "hash": "284d5c50d3f1ddd9fa7df3d382ea904732a9c2ff"
+      "url": "https://package.openupm.com"
     },
     "com.unity.collab-proxy": {
       "version": "1.2.16",
