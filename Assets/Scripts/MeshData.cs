@@ -17,6 +17,9 @@ namespace ZView
         [SerializeField]
         public Vector3 position;
 
+        [SerializeField]
+        public Vector3 rotation;
+
         DateTime timestamp_d;
 
         public DateTime Timestamp { get { return timestamp_d; } }

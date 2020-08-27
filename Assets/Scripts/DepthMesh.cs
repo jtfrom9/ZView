@@ -11,6 +11,9 @@ namespace ZView
     {
         MeshData meshData;
 
+        public Vector3 position;
+        public Vector3 rotation;
+
         public MeshData Data
         {
             get => meshData;

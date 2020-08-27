@@ -28,6 +28,8 @@ namespace ZView
                         Debug.Log(data.Timestamp);
                         var depthMesh = Instantiate(depthMeshPrefab, this.transform).GetComponent<DepthMesh>();
                         depthMesh.SetData(data);
+                        depthMesh.position = data.position;
+                        depthMesh.rotation = data.rotation;
 
                         {
                             var go = Instantiate(positionPrefab);
