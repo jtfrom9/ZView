@@ -46,7 +46,7 @@
       "depth": 0,
       "source": "git",
       "dependencies": {},
-      "hash": "48baf5b53200e95c96088d518fdb67eeb5b64031"
+      "hash": "99eb27ac22e56dda6dd30d4dcc944ba81c9b3fcc"
     },
     "com.jtfrom9.miguel12345.unity-shapes": {
       "version": "https://github.com/jtfrom9/UnityShapes.git?path=Assets/Shapes",

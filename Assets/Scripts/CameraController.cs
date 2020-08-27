@@ -21,23 +21,28 @@ namespace ZView
             }).AddTo(this);
 
             var io = context.GetObservable(0);
-            io.ToEulerAngle(new Vector2 { x = -90, y = -90 })
-                .Subscribe(rot => {
-                    Debug.Log($"rotation = {rot}");
-                    if(Input.GetKey(KeyCode.LeftShift)) {
-                        // var q = Quaternion.Euler(rot);
-                        // float angle;
-                        // Vector3 axis;
-                        // q.ToAngleAxis(out angle, out axis);
-                        // transform.RotateAround(origin, axis,angle);
-                        // transform.RotateAround()
-                        transform.RotateAround(origin, Vector3.right, rot.x);
-                        transform.RotateAround(origin, Vector3.up, rot.y);
-                    }else
-                    {
-                        transform.Rotate(rot);
-                    }
-                }).AddTo(this);
+            io.Difference().Subscribe(diff =>
+            {
+                var hratio = -90.0f / Screen.width;
+                var vratio = -90.0f / Screen.height;
+                var rot = diff.ToEulerAngle(hratio, vratio);
+                Debug.Log($"rotation = {rot}");
+                if (Input.GetKey(KeyCode.LeftShift))
+                {
+                    // var q = Quaternion.Euler(rot);
+                    // float angle;
+                    // Vector3 axis;
+                    // q.ToAngleAxis(out angle, out axis);
+                    // transform.RotateAround(origin, axis,angle);
+                    // transform.RotateAround()
+                    transform.RotateAround(origin, Vector3.right, rot.x);
+                    transform.RotateAround(origin, Vector3.up, rot.y);
+                }
+                else
+                {
+                    transform.Rotate(rot);
+                }
+            }).AddTo(this);
 
             io.DoubleSequence(200).Subscribe(_ =>
             {
@@ -45,6 +50,12 @@ namespace ZView
                 transform.position = orig.position;
                 transform.rotation = orig.rotation;
             }).AddTo(this);
+
+            // context.GetObservable(2).Difference().Subscribe(diff => {
+            //     //ToEulerAngle(0.01f, 0.01f)
+            //     Debug.Log($"diff={diff}");
+            //     transform.Translate(-diff.y, diff.x, 0);
+            // }).AddTo(this);
         }
     }
 }
