@@ -16,7 +16,7 @@ namespace ZView
 
         void Start()
         {
-            firebaseManager.OnCreated += async () =>
+            firebaseManager.OnCreated += () =>
             {
                 if (root == null)
                 {
