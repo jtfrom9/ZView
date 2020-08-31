@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UniRx;
 using InputObservable;
 
@@ -19,8 +20,7 @@ namespace ZView
         void Start()
         {
             var orig = (transform.position, transform.rotation);
-            var context = this.DefaultInputContext();
-
+            var context = this.DefaultInputContext(EventSystem.current);
 
             (context as IMouseWheelObservable)?.Wheel.Subscribe(e =>
             {

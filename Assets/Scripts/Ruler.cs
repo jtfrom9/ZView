@@ -8,38 +8,77 @@ namespace ZView
     public class Ruler : MonoBehaviour
     {
         List<CircleInfo> circles = new List<CircleInfo>();
+        List<LineInfo> lines = new List<LineInfo>();
 
         void Start()
         {
-            circles.Add(new CircleInfo
+            var origin = Vector3.zero;
+            float width = 0.02f;
+
+            for (int i = 1; i <= 3; i++) {
+                circles.Add(new CircleInfo
+                {
+                    // center = Vector3.up * 0.01f,
+                    center = origin,
+                    radius = 1.0f * i,
+                    forward = Vector3.up,
+                    // fillColor = Color.white
+                    bordered = true,
+                    borderColor = Color.white,
+                    borderWidth = width,
+                });
+            }
+            for (int i = 1; i <= 3; i++)
             {
-                center = Vector3.up * 0.01f,
-                radius = 1.0f,
-                forward = Vector3.up,
-                // fillColor = Color.white
-                bordered = true,
-                borderColor = Color.white,
-                borderWidth = 0.02f,
+                circles.Add(new CircleInfo
+                {
+                    center = origin,
+                    radius = 1.0f * i,
+                    forward = Vector3.forward,
+                    // fillColor = Color.white
+                    bordered = true,
+                    borderColor = Color.white,
+                    borderWidth = width,
+                });
+            }
+            for (int i = 1; i <= 3; i++)
+            {
+                circles.Add(new CircleInfo
+                {
+                    center = origin,
+                    radius = 1.0f * i,
+                    forward = Vector3.right,
+                    // fillColor = Color.white
+                    bordered = true,
+                    borderColor = Color.white,
+                    borderWidth = width,
+                });
+            }
+            lines.Add(new LineInfo { 
+                startPos = origin - Vector3.right * 10.0f,
+                endPos = origin + Vector3.right * 10.0f,
+                forward = Vector3.forward,
+                width = width,
+                endArrow = true,
+                fillColor = Color.red
             });
-            circles.Add(new CircleInfo
+            lines.Add(new LineInfo
             {
-                center = Vector3.up * 0.01f,
-                radius = 2.0f,
-                forward = Vector3.up,
-                // fillColor = Color.white
-                bordered = true,
-                borderColor = Color.white,
-                borderWidth = 0.02f
+                startPos = origin - Vector3.up * 10.0f,
+                endPos = origin + Vector3.up * 10.0f,
+                forward = Vector3.forward,
+                width = width,
+                endArrow = true,
+                fillColor = Color.green
             });
-            circles.Add(new CircleInfo
+            lines.Add(new LineInfo
             {
-                center = Vector3.up * 0.01f,
-                radius = 3.0f,
+                startPos = origin - Vector3.forward * 10.0f,
+                endPos = origin + Vector3.forward * 10.0f,
                 forward = Vector3.up,
-                // fillColor = Color.white
-                bordered = true,
-                borderColor = Color.white,
-                borderWidth = 0.02f
+                width = width,
+                endArrow = true,
+                fillColor = Color.blue
             });
         }
 
@@ -48,6 +87,10 @@ namespace ZView
             foreach (var c in circles)
             {
                 Circle.Draw(c);
+            }
+            foreach (var l in lines)
+            {
+                LineSegment.Draw(l);
             }
         }
     }
