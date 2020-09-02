@@ -33,7 +33,7 @@ namespace ZView
                         var data = MeshData.FromJson(args.Snapshot.GetRawJsonValue());
                         Debug.Log(data.Timestamp);
                         var depthMesh = Instantiate(depthMeshPrefab, this.transform).GetComponent<DepthMesh>();
-                        depthMesh.SetData(data);
+                        depthMesh.Initialize(data);
                         // depthMesh.position = data.position;
                         // depthMesh.rotation = data.rotation;
 
@@ -85,6 +85,7 @@ namespace ZView
                 //     depthMesh.SetData(data);
                 // }
             };
+
         }
     }
 }

@@ -10,6 +10,8 @@ namespace ZView
         List<CircleInfo> circles = new List<CircleInfo>();
         List<LineInfo> lines = new List<LineInfo>();
 
+        ControlPanelView controlPanel;
+
         void Start()
         {
             var origin = Vector3.zero;
@@ -80,17 +82,25 @@ namespace ZView
                 endArrow = true,
                 fillColor = Color.blue
             });
+
+            controlPanel = FindObjectOfType<ControlPanelView>();
         }
 
         void Update()
         {
-            foreach (var c in circles)
+            if (controlPanel.Ruler.Value)
             {
-                Circle.Draw(c);
+                foreach (var c in circles)
+                {
+                    Circle.Draw(c);
+                }
             }
-            foreach (var l in lines)
+            if (controlPanel.Axis.Value)
             {
-                LineSegment.Draw(l);
+                foreach (var l in lines)
+                {
+                    LineSegment.Draw(l);
+                }
             }
         }
     }

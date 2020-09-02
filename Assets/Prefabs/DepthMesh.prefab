@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 4962530043831965505}
   - component: {fileID: 5688580629724734555}
   - component: {fileID: 5302515206421083088}
+  - component: {fileID: -2563807754358102792}
   m_Layer: 0
   m_Name: DepthMesh
   m_TagString: Untagged
@@ -92,3 +93,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f93b6b635e0aa4411bae67ee1a62ed06, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &-2563807754358102792
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3198493022427084858}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c303df4ce4a9439495fc90c25fcf7c9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  size: {x: 0, y: 0, z: 0}
+  center: {x: 0, y: 0, z: 0}

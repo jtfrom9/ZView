@@ -9,12 +9,17 @@ namespace ZView
 {
     public class DepthMeshItemListView : MonoBehaviour
     {
-        public void OnSelected(DepthMeshItemPanelView child)
+        [SerializeField] ScrollRectController scrollRectController;
+
+        public void OnSelected(DepthMeshItemPanelView child, RectTransform rectTransform)
         {
             foreach (var c in GetComponentsInChildren<DepthMeshItemPanelView>())
             {
                 if (c != child)
                     c.ClearSelected();
+            }
+            if(scrollRectController!=null) {
+                scrollRectController.Select(rectTransform);
             }
         }
     }

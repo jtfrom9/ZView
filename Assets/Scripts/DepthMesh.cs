@@ -18,7 +18,11 @@ namespace ZView
         Vector3 rotation;
         bool setup = false;
 
-        LineInfo? lineInfo;
+        bool initialized = false;
+        LineInfo lineInfo;
+
+        Color selectedArrowColor = new Color(1, 0.5f, 0, 1);
+        Color normalArrowColor = new Color(0, 0.5f, 1, 1);
 
         void Start()
         {
@@ -31,7 +35,7 @@ namespace ZView
         //     set => SetData(value);
         // }
 
-        public void SetData(MeshData data)
+        public void Initialize(MeshData data)
         {
             var mesh = new Mesh();
             gameObject.name = data.Timestamp.ToString();
@@ -46,25 +50,29 @@ namespace ZView
             this.position = data.position;
             this.rotation = data.rotation;
 
-            transform.position = data.position;
-            transform.rotation = Quaternion.Euler(data.rotation);
-            this.setup = true;
+            // transform.position = data.position;
+            // transform.rotation = Quaternion.Euler(data.rotation);
+            // this.setup = true;
 
             lineInfo = new LineInfo
             {
                 startPos = data.position,
                 endPos = (data.position + Quaternion.Euler(data.rotation) * Vector3.forward).normalized,
-                width = 0.5f,
-                fillColor = Color.red,
-                endArrow = true
+                width = 0.05f,
+                fillColor = normalArrowColor,
+                forward = Vector3.up,
+                endArrow = true,
+                arrowLength = 0.1f,
+                arrowWidth = 0.2f
             };
+            initialized = true;
         }
 
         void Update()
         {
-            if (lineInfo != null)
+            if (initialized)
             {
-                LineSegment.Draw(lineInfo.Value);
+                LineSegment.Draw(lineInfo);
             }
         }
 
@@ -88,10 +96,12 @@ namespace ZView
             if (focus)
             {
                 this.material.SetColor("_Color", new Color(1, 1, 0, 1));
+                lineInfo.fillColor = selectedArrowColor;
             }
             else
             {
                 this.material.SetColor("_Color", Color.white);
+                lineInfo.fillColor = normalArrowColor;
             }
         }
     }

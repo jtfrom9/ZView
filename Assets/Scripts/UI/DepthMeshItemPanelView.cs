@@ -9,11 +9,12 @@ namespace ZView
 {
     public class DepthMeshItemPanelView : MonoBehaviour
     {
-        [SerializeField] Toggle visibleToggle;
-        [SerializeField] Text text;
-        [SerializeField] Button modifyPoseButton;
-        [SerializeField] Button jumpButton;
+        [SerializeField] Toggle visibleToggle = default;
+        [SerializeField] Text text = default;
+        [SerializeField] Button modifyPoseButton = default;
+        [SerializeField] Button jumpButton = default;
 
+        RectTransform rectTransform;
         DepthMeshItemListView parent;
         bool selected = false;
 
@@ -27,15 +28,24 @@ namespace ZView
         public IObservable<Unit> ModifyPose { get => modifySubject; }
         public IObservable<Unit> Jump { get => jumpSubject; }
 
+        void onVisibleChanged(bool v)
+        {
+            enabledSubject.OnNext(v);
+            modifyPoseButton.interactable = v;
+            jumpButton.interactable = v;
+        }
+
         void Start()
         {
+            rectTransform = GetComponent<RectTransform>();
             parent = transform.parent.gameObject.GetComponent<DepthMeshItemListView>();
+            // bg = GetComponent<Image>();
             visibleToggle.OnValueChangedAsObservable()
                 .Subscribe(v => {
-                    enabledSubject.OnNext(v);
-                    modifyPoseButton.interactable = v;
-                    jumpButton.interactable = v;
-                }).AddTo(this);
+                    Debug.Log("visible");
+                    onVisibleChanged(v);
+                    })
+                .AddTo(this);
             modifyPoseButton.OnClickAsObservable()
                 .Subscribe(_ => {
                     modifySubject.OnNext(Unit.Default);
@@ -46,15 +56,29 @@ namespace ZView
                 }).AddTo(this);
         }
 
-        public void OnSelected()
+        void OnDestroy()
         {
+            selectedSubject.Dispose();
+        }
+
+        public void OnSelect()
+        {
+            Debug.Log($"OnSelect. {name}");
             if (!selected)
             {
                 selected = true;
                 Debug.Log($"Selected. {name}");
-                parent.OnSelected(this);
+                parent.OnSelected(this, rectTransform);
                 selectedSubject.OnNext(selected);
+                // bg.color = Color.white;
             }
+        }
+
+        public void OnSubmit()
+        {
+            Debug.Log($"OnSubmit. {name}");
+            visibleToggle.isOn = !visibleToggle.isOn;
+            onVisibleChanged(visibleToggle.isOn);
         }
 
         public void ClearSelected()
@@ -64,12 +88,8 @@ namespace ZView
                 Debug.Log($"Deselected. {name}");
                 selected = false;
                 selectedSubject.OnNext(selected);
+                // bg.color = Color.gray;
             }
-        }
-
-        void OnDestroy()
-        {
-            selectedSubject.Dispose();
         }
 
         public void Initialize(string name)
