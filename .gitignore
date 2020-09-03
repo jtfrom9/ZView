@@ -64,3 +64,4 @@ crashlytics-build.properties
 
 Assets/MyAssets*
 Assets/Scripts/Firebase/google-services.json
+tools/depth-mesh-firebase-adminsdk-38v0i-344ee0c985.json
