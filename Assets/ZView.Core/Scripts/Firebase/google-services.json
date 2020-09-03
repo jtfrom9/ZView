@@ -1,0 +1,69 @@
+{
+  "project_info": {
+    "project_number": "675034361693",
+    "firebase_url": "https://depth-mesh.firebaseio.com",
+    "project_id": "depth-mesh",
+    "storage_bucket": "depth-mesh.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:675034361693:android:5d5168b22702c6062842b4",
+        "android_client_info": {
+          "package_name": "com.jtfrom9.DepthToy"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "675034361693-5gtvds8366gj4io1om75ammf0kgqdicv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBslFKDJ-UXoTq3-wn7qrBFxvdREiR9vzg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "675034361693-5gtvds8366gj4io1om75ammf0kgqdicv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:675034361693:android:c651b7dc8215f2de2842b4",
+        "android_client_info": {
+          "package_name": "com.jtfrom9.ZView"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "675034361693-5gtvds8366gj4io1om75ammf0kgqdicv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBslFKDJ-UXoTq3-wn7qrBFxvdREiR9vzg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "675034361693-5gtvds8366gj4io1om75ammf0kgqdicv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
