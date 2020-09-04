@@ -8,15 +8,15 @@ using Zenject;
 
 namespace ZView
 {
-    public class DepthMeshItemListView : MonoBehaviour, IMeshDataListUIView
+    public class MeshDataListPanelView : MonoBehaviour, IMeshDataListUIView
     {
         [SerializeField] ScrollRectController scrollRectController;
 
         [SerializeField] GameObject depthMeshItemPanelPrefab;
 
-        public void OnSelected(DepthMeshItemPanelView child, RectTransform rectTransform)
+        public void OnSelected(MeshDataPanelView child, RectTransform rectTransform)
         {
-            foreach (var c in GetComponentsInChildren<DepthMeshItemPanelView>())
+            foreach (var c in GetComponentsInChildren<MeshDataPanelView>())
             {
                 if (c != child)
                     c.ClearSelected();
@@ -28,9 +28,9 @@ namespace ZView
 
         IMeshDataUIView IMeshDataListUIView.Add(string key, string text)
         {
-            var view = Instantiate(depthMeshItemPanelPrefab).GetComponent<DepthMeshItemPanelView>();
+            var view = Instantiate(depthMeshItemPanelPrefab).GetComponent<MeshDataPanelView>();
             view.Initialize(key, text);
-            view.transform.SetParent(transform);
+            view.transform.SetParent(transform, false);
             return view;
         }
     }

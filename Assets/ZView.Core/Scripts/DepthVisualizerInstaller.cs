@@ -7,7 +7,7 @@ namespace ZView
     public class DepthVisualizerInstaller : MonoInstaller
     {
         [SerializeField] FirebaseMeshDatabase firebaseMeshDatabase;
-        [SerializeField] DepthMeshItemListView dataListView;
+        [SerializeField] MeshDataListPanelView dataListView;
 
         public override void InstallBindings()
         {

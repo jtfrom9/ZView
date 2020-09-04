@@ -15,7 +15,7 @@ namespace ZView
     {
         IMeshDatabase meshDatabase;
         IDepthVisualizer depthVisualizer;
-        IMeshDataCollectionListUIView collectionListUIView;
+        IMeshDataCollectionListUIView dataListCollectionUIView;
         IMeshDataListUIView dataListUIView;
 
         IDisposable currentDataSetModelSubscriber;
@@ -32,7 +32,7 @@ namespace ZView
         {
             this.meshDatabase = database;
             this.depthVisualizer = depthVisualizer;
-            this.collectionListUIView = collectionListUIView;
+            this.dataListCollectionUIView = collectionListUIView;
             this.dataListUIView = dataListUIView;
         }
 
@@ -42,7 +42,7 @@ namespace ZView
             meshDatabase.MeshDataSetCollection.ObserveAdd().Subscribe(e => {
                 var set = e.Value;
                 Debug.Log($"[Presenter] DataSet Added: {set.Key}, {set.Timestamp.ToString()}");
-                collectionListUIView.Add(new MeshDataSetTag
+                dataListCollectionUIView.Add(new MeshDataSetTag
                 {
                     key = set.Key,
                     name = set.Timestamp.ToString()
@@ -50,7 +50,7 @@ namespace ZView
             }).AddTo(compositeDisposable);
 
             // Model <- View
-            collectionListUIView.Selected.Subscribe(tag =>
+            dataListCollectionUIView.Selected.Subscribe(tag =>
             {
                 IMeshDataSet dataSet;
                 Debug.Log($"[Presenter] DataSet Selected: {tag.key}, {tag.name}");

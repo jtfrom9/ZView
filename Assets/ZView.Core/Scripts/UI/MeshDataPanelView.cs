@@ -7,7 +7,7 @@ using UniRx;
 
 namespace ZView
 {
-    public class DepthMeshItemPanelView : MonoBehaviour, IMeshDataUIView
+    public class MeshDataPanelView : MonoBehaviour, IMeshDataUIView
     {
         [SerializeField] Toggle visibleToggle = default;
         [SerializeField] Text text = default;
@@ -15,7 +15,7 @@ namespace ZView
         [SerializeField] Button jumpButton = default;
 
         RectTransform rectTransform;
-        DepthMeshItemListView parent;
+        MeshDataListPanelView parent;
         bool selected = false;
 
         Subject<bool> enabledSubject = new Subject<bool>();
@@ -39,7 +39,7 @@ namespace ZView
         void Start()
         {
             rectTransform = GetComponent<RectTransform>();
-            parent = transform.parent.gameObject.GetComponent<DepthMeshItemListView>();
+            parent = transform.parent.gameObject.GetComponent<MeshDataListPanelView>();
             // bg = GetComponent<Image>();
             visibleToggle.OnValueChangedAsObservable()
                 .Subscribe(v => {
