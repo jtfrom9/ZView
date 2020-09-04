@@ -20,7 +20,7 @@ namespace ZView
                 Debug.Log("fg write ok");
 
                 var key = root.Child("db").Push().Key;
-                var data = new MeshData();
+                var data = new SerializableMeshData();
                 data.vertices.Add(Vector3.zero);
                 data.vertices.Add(new Vector3(1, 2, 3));
                 data.vertices.Add(new Vector3(4, 5, 6));

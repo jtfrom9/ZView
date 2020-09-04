@@ -1,4 +1,6 @@
-﻿using System.Collections;
+﻿using System;
+using System.Linq;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Cysharp.Threading.Tasks;
@@ -7,85 +9,115 @@ using UniRx;
 
 namespace ZView
 {
-    public class DepthVisualizer : MonoBehaviour
+    public interface IDepthVisualizer
     {
-        public FirebaseManager firebaseManager;
-        public GameObject depthMeshPrefab;
-        public GameObject positionPrefab;
+        void Add(IMeshData data, IMeshDataUIView uiView);
+    }
 
-        public GameObject depthMeshItemPanelPrefab;
-        DepthMeshItemListView panelList;
+    public class DepthVisualizer : MonoBehaviour, IDepthVisualizer, IMeshDataCollectionListUIView
+    {
+        [SerializeField] GameObject depthMeshPrefab;
 
-        DatabaseReference root;
+        Subject<MeshDataSetTag> selectedSubject = new Subject<MeshDataSetTag>();
 
-        void Start()
+        void IDepthVisualizer.Add(IMeshData data, IMeshDataUIView uiView)
         {
-            panelList = FindObjectOfType<DepthMeshItemListView>();
+            Debug.Log(data.Timestamp);
+            var depthMesh = Instantiate(depthMeshPrefab, this.transform).GetComponent<DepthMesh>();
+            depthMesh.Initialize(data);
 
-            firebaseManager.OnCreated += () =>
+            uiView.Enabled.Subscribe(enabled => {
+                depthMesh.gameObject.SetActive(enabled);
+            }).AddTo(this);
+
+            uiView.Selected.Subscribe(selected => {
+                depthMesh.OnFocus(selected);
+            }).AddTo(this);
+
+            uiView.OnModifyPose.Subscribe(_ =>
             {
-                if (root == null)
-                {
-                    root = firebaseManager.Database.RootReference.Child("db");
+                depthMesh.ModifyPose();
+            }).AddTo(this);
 
-                    root.ChildAdded += (_, args) =>
-                    {
-                        var data = MeshData.FromJson(args.Snapshot.GetRawJsonValue());
-                        Debug.Log(data.Timestamp);
-                        var depthMesh = Instantiate(depthMeshPrefab, this.transform).GetComponent<DepthMesh>();
-                        depthMesh.Initialize(data);
-                        // depthMesh.position = data.position;
-                        // depthMesh.rotation = data.rotation;
-
-                        // {
-                        //     var go = Instantiate(positionPrefab);
-                        //     go.name = $"camera ({data.Timestamp.ToString()})";
-                        //     go.transform.position = data.position;
-                        // }
-                        {
-                            var item = Instantiate(depthMeshItemPanelPrefab).GetComponent<DepthMeshItemPanelView>();
-                            item.transform.SetParent(panelList.transform);
-                            item.Initialize(depthMesh.name);
-                            item.Enabled.Subscribe(enabled => {
-                                depthMesh.gameObject.SetActive(enabled);
-                            }).AddTo(this);
-                            item.Selected.Subscribe(selected => {
-                                depthMesh.OnFocus(selected);
-                            }).AddTo(this);
-                            item.ModifyPose.Subscribe(__ => depthMesh.ModifyPose()).AddTo(this);
-                            item.Jump.Subscribe(__ => {
-                                Camera.main.transform.position = data.position;
-                                Camera.main.transform.rotation = Quaternion.Euler(data.rotation);
-                            }).AddTo(this);
-                        }
-                    };
-
-                    root.ChildRemoved += (_, args) =>
-                    {
-                        var data = MeshData.FromJson(args.Snapshot.GetRawJsonValue());
-                        var go = GameObject.Find(data.Timestamp.ToString());
-                        if (go != null)
-                        {
-                            GameObject.Destroy(go);
-                            Debug.Log($"removed {go.name}");
-
-                            GameObject.Destroy(GameObject.Find($"camera ({go.name})"));
-                        }
-                    };
-                }
-
-                // var dp = await root.GetValueAsync().AsUniTask();
-
-                // foreach (var c in dp.Children)
-                // {
-                //     var data = MeshData.FromJson(c.GetRawJsonValue());
-                //     Debug.Log(data.Timestamp);
-
-                //     var depthMesh = Instantiate(depthMeshPrefab, this.transform).GetComponent<DepthMesh>();
-                //     depthMesh.SetData(data);
-                // }
-            };
-
+            uiView.OnJump.Subscribe(_ => {
+                Camera.main.transform.position = data.Position;
+                Camera.main.transform.rotation = Quaternion.Euler(data.Rotation);
+            }).AddTo(this);
         }
+
+        // temporary solution
+        void IMeshDataCollectionListUIView.Add(MeshDataSetTag tag)
+        {
+            selectedSubject.OnNext(tag);
+        }
+        IObservable<MeshDataSetTag> IMeshDataCollectionListUIView.Selected { get => selectedSubject; }
+
+#if false
+        async void onMeshDataAdded(object sender, ChildChangedEventArgs args)
+        {
+            var data = await UniTask.Run(() =>
+            {
+                return MeshData.FromJson(args.Snapshot.GetRawJsonValue());
+            });
+
+            // Model
+            Debug.Log(data.Timestamp);
+            var depthMesh = Instantiate(depthMeshPrefab, this.transform).GetComponent<DepthMesh>();
+            depthMesh.Initialize(data);
+
+            // View
+            var item = Instantiate(depthMeshItemPanelPrefab).GetComponent<DepthMeshItemPanelView>();
+            item.transform.SetParent(panelList.transform);
+            item.Initialize(depthMesh.name);
+            item.Enabled.Subscribe(enabled =>
+            {
+                depthMesh.gameObject.SetActive(enabled);
+            }).AddTo(this);
+            item.Selected.Subscribe(selected =>
+            {
+                depthMesh.OnFocus(selected);
+            }).AddTo(this);
+            item.ModifyPose.Subscribe(__ => depthMesh.ModifyPose()).AddTo(this);
+            item.Jump.Subscribe(__ =>
+            {
+                Camera.main.transform.position = data.position;
+                Camera.main.transform.rotation = Quaternion.Euler(data.rotation);
+            }).AddTo(this);
+        }
+
+        void onMeshDataRemoved(object sender, ChildChangedEventArgs args)
+        {
+            var data = MeshData.FromJson(args.Snapshot.GetRawJsonValue());
+            var go = GameObject.Find(data.Timestamp.ToString());
+            if (go != null)
+            {
+                GameObject.Destroy(go);
+                Debug.Log($"removed {go.name}");
+
+                GameObject.Destroy(GameObject.Find($"camera ({go.name})"));
+            }
+        }
+
+        void onMeshDataSetSelectedFromUI(MeshDataSet mds)
+        {
+            if(!meshDataSetList.ContainsValue(mds))
+                return;
+            var x = meshDataSetList.FirstOrDefault(kv => kv.Value == mds);
+            currentSessionRef = sessionsRef.Child(x.Key);
+            currentSessionRef.ChildAdded += onMeshDataAdded;
+            currentSessionRef.ChildRemoved += onMeshDataRemoved;
+        }
+
+        void onMeshDataSetDeselectedFromUI(MeshDataSet mds)
+        {
+            if (!meshDataSetList.ContainsValue(mds))
+                return;
+            var x = meshDataSetList.FirstOrDefault(kv => kv.Value == mds);
+            currentSessionRef = sessionsRef.Child(x.Key);
+            currentSessionRef.ChildAdded -= onMeshDataAdded;
+            currentSessionRef.ChildRemoved -= onMeshDataRemoved;
+        }
+#endif
+
     }
 }

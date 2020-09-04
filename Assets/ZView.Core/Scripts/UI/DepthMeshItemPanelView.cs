@@ -7,7 +7,7 @@ using UniRx;
 
 namespace ZView
 {
-    public class DepthMeshItemPanelView : MonoBehaviour
+    public class DepthMeshItemPanelView : MonoBehaviour, IMeshDataUIView
     {
         [SerializeField] Toggle visibleToggle = default;
         [SerializeField] Text text = default;
@@ -23,10 +23,11 @@ namespace ZView
         Subject<Unit> modifySubject = new Subject<Unit>();
         Subject<Unit> jumpSubject = new Subject<Unit>();
 
-        public IObservable<bool> Enabled { get => enabledSubject; }
-        public IObservable<bool> Selected { get => selectedSubject; }
-        public IObservable<Unit> ModifyPose { get => modifySubject; }
-        public IObservable<Unit> Jump { get => jumpSubject; }
+        public string Key { get; private set; }
+        IObservable<bool> IMeshDataUIView.Enabled { get => enabledSubject; }
+        IObservable<bool> IMeshDataUIView.Selected { get => selectedSubject; }
+        IObservable<Unit> IMeshDataUIView.OnModifyPose { get => modifySubject; }
+        IObservable<Unit> IMeshDataUIView.OnJump { get => jumpSubject; }
 
         void onVisibleChanged(bool v)
         {
@@ -92,8 +93,9 @@ namespace ZView
             }
         }
 
-        public void Initialize(string name)
+        public void Initialize(string key, string name)
         {
+            this.Key = key;
             gameObject.name = name;
             text.text = name;
         }

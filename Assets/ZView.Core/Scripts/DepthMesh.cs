@@ -12,7 +12,7 @@ namespace ZView
     {
         Material material;
 
-        MeshData meshData;
+        IMeshData meshData;
 
         Vector3 position;
         Vector3 rotation;
@@ -35,20 +35,20 @@ namespace ZView
         //     set => SetData(value);
         // }
 
-        public void Initialize(MeshData data)
+        public void Initialize(IMeshData data)
         {
             var mesh = new Mesh();
             gameObject.name = data.Timestamp.ToString();
-            mesh.SetVertices(data.vertices);
-            mesh.SetIndices(Enumerable.Range(0, data.vertices.Count).Select(x => x).ToArray(),
+            mesh.SetVertices(data.Vertices);
+            mesh.SetIndices(Enumerable.Range(0, data.Vertices.Count).Select(x => x).ToArray(),
                 MeshTopology.Points,
                 0);
 
             var mf = GetComponent<MeshFilter>();
             mf.sharedMesh = mesh;
 
-            this.position = data.position;
-            this.rotation = data.rotation;
+            this.position = data.Position;
+            this.rotation = data.Rotation;
 
             // transform.position = data.position;
             // transform.rotation = Quaternion.Euler(data.rotation);
@@ -56,8 +56,8 @@ namespace ZView
 
             lineInfo = new LineInfo
             {
-                startPos = data.position,
-                endPos = (data.position + Quaternion.Euler(data.rotation) * Vector3.forward).normalized,
+                startPos = data.Position,
+                endPos = (data.Position + Quaternion.Euler(data.Rotation) * Vector3.forward).normalized,
                 width = 0.05f,
                 fillColor = normalArrowColor,
                 forward = Vector3.up,

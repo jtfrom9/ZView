@@ -2,55 +2,37 @@
 using System.Collections.Generic;
 using System;
 using UnityEngine;
+using UniRx;
 
 namespace ZView
 {
-    [SerializeField]
-    public class MeshData : ISerializationCallbackReceiver
+    public interface IMeshData
     {
-        [SerializeField]
-        public List<Vector3> vertices = new List<Vector3>();
+        string Key { get; }
+        DateTime Timestamp { get; }
+        List<Vector3> Vertices { get; }
+        Vector3 Position { get; }
+        Vector3 Rotation { get; }
+    }
 
-        [SerializeField]
-        string timestamp;
-
-        [SerializeField]
-        public Vector3 position;
-
-        [SerializeField]
-        public Vector3 rotation;
-
-        DateTime timestamp_d;
-
-        public DateTime Timestamp { get { return timestamp_d; } }
-
-        public MeshData()
-        {
-            this.timestamp_d = DateTime.Now;
-            this.timestamp = timestamp_d.ToString();
+    public static class IMeshDataExtension {
+        public static string ToString(this IMeshData meshData) {
+            return $"{meshData.Timestamp.ToString()}, {meshData.Vertices.Count.ToString()} points";
         }
+    }
 
-        void ISerializationCallbackReceiver.OnAfterDeserialize()
-        {
-            if (!string.IsNullOrEmpty(timestamp))
-            {
-                timestamp_d = new DateTime();
-                System.DateTime.TryParse(timestamp, out timestamp_d);
-            }
-        }
+    public interface IMeshDataSet
+    {
+        string Key { get; }
+        DateTime Timestamp { get; }
+        void NotifySelected(bool v);
 
-        void ISerializationCallbackReceiver.OnBeforeSerialize()
-        {
-        }
+        IReadOnlyReactiveCollection<IMeshData> MeshDataCollection { get; }
 
-        public string ToJson(bool pretty = false)
-        {
-            return JsonUtility.ToJson(this, pretty);
-        }
+    }
 
-        public static MeshData FromJson(string json)
-        {
-            return JsonUtility.FromJson<MeshData>(json);
-        }
+    public interface IMeshDatabase
+    {
+        IReadOnlyReactiveCollection<IMeshDataSet> MeshDataSetCollection { get; }
     }
 }
