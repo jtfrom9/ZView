@@ -80,11 +80,16 @@ namespace ZView
         {
             var key = args.Snapshot.Key;
             var timestamp = args.Snapshot.Child("timestamp").GetValue(false) as string;
+            var path = args.Snapshot.Child("path").GetValue(false) as string;
             Debug.Log($"onSessionAdded: {timestamp}");
 
             var dt = new DateTime();
             System.DateTime.TryParse(timestamp, out dt);
-            var dataRef = rootRef.Child("meshes").Child(key);
+
+            // path fallback
+            if(string.IsNullOrEmpty(path))
+                path = "meshes";
+            var dataRef = rootRef.Child(path).Child(key);
             pcDataSetCollection.Add(new FirebasePointCloudDataSet(dataRef, key, dt));
         }
 
