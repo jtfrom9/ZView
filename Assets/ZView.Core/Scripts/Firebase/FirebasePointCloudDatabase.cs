@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 using Cysharp.Threading.Tasks;
 using Firebase.Database;
@@ -9,9 +10,10 @@ using UniRx;
 
 namespace ZView
 {
-    public class FirebasePointCloudDataSet: IPointCloudDataSet
+    public class FirebasePointCloudDataSet: IPointCloudDataSet, IDisposable
     {
         DatabaseReference dataRef;
+        CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
 
         public string Key { get; private set; }
         public DateTime Timestamp{ get; private set; }
@@ -23,14 +25,21 @@ namespace ZView
             this.Timestamp = timestamp;
         }
 
-        void IPointCloudDataSet.NotifySelected(bool selected)
+        void setupCallback(bool v)
         {
-            if (selected)
+            if (v)
             {
                 dataRef.ChildAdded += onDataAdded;
-            }else {
+            }
+            else
+            {
                 dataRef.ChildAdded -= onDataAdded;
             }
+        }
+
+        void IPointCloudDataSet.NotifySelected(bool selected)
+        {
+            setupCallback(selected);
         }
 
         ReactiveCollection<IPointCloudData> pcDataCollection = new ReactiveCollection<IPointCloudData>();
@@ -41,8 +50,19 @@ namespace ZView
             var data = await UniTask.Run(() =>
             {
                 return SerializablePointCloudData.FromJson(args.Snapshot.GetRawJsonValue());
-            });
+            },
+                configureAwait: true, this.cancellationTokenSource.Token);
             pcDataCollection.Add(data);
+        }
+
+        public void Dispose()
+        {
+            if(this.cancellationTokenSource==null)
+                return;
+            setupCallback(false);
+            this.cancellationTokenSource.Cancel();
+            this.cancellationTokenSource = null;
+            GC.SuppressFinalize(this);
         }
     }
 
@@ -52,7 +72,6 @@ namespace ZView
 
         DatabaseReference rootRef;
         DatabaseReference sessionsRef;
-        DatabaseReference currentSessionRef;
 
         ReactiveCollection<IPointCloudDataSet> pcDataSetCollection = new ReactiveCollection<IPointCloudDataSet>();
         IReadOnlyReactiveCollection<IPointCloudDataSet> IPointCloudDatabase.PointCloudDataSetCollection { get => pcDataSetCollection; }
@@ -82,6 +101,31 @@ namespace ZView
                 sessionsRef.ChildAdded += onSessionAdded;
                 sessionsRef.ChildRemoved += onSessionRemoved;
             };
+        }
+
+        void clearCallback()
+        {
+            sessionsRef.ChildAdded -= onSessionAdded;
+            sessionsRef.ChildRemoved -= onSessionRemoved;
+        }
+
+        public void Close()
+        {
+            if(rootRef==null)
+                return;
+            clearCallback();
+            sessionsRef = null;
+            foreach (var set in pcDataSetCollection)
+            {
+                (set as IDisposable)?.Dispose();
+            }
+            rootRef = null;
+        }
+
+        void OnApplicationQuit()
+        {
+            Debug.Log("OnApplicationQuit");
+            Close();
         }
     }
 }

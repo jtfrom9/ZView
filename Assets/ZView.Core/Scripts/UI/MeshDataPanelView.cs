@@ -43,9 +43,8 @@ namespace ZView
             // bg = GetComponent<Image>();
             visibleToggle.OnValueChangedAsObservable()
                 .Subscribe(v => {
-                    Debug.Log("visible");
                     onVisibleChanged(v);
-                    })
+                })
                 .AddTo(this);
             modifyPoseButton.OnClickAsObservable()
                 .Subscribe(_ => {
