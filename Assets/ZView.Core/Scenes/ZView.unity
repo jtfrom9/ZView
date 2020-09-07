@@ -631,7 +631,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5fcbc4a1957684615875dd7182be7c0d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  depthMeshPrefab: {fileID: 3198493022427084858, guid: 9c275035a775f4cafa3eb197a1fa2ec1,
+  pointCloudPrefab: {fileID: 3198493022427084858, guid: 9c275035a775f4cafa3eb197a1fa2ec1,
     type: 3}
 --- !u!4 &583551480
 Transform:

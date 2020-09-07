@@ -6,7 +6,7 @@ namespace ZView
     [RequireComponent(typeof(DepthVisualizer))]
     public class DepthVisualizerInstaller : MonoInstaller
     {
-        [SerializeField] FirebaseMeshDatabase firebaseMeshDatabase;
+        [SerializeField] FirebasePointCloudDatabase firebaseMeshDatabase;
         [SerializeField] MeshDataListPanelView dataListView;
 
         public override void InstallBindings()
@@ -16,7 +16,7 @@ namespace ZView
             Container.BindInterfacesTo<DepthVisualizer>()
                 .FromInstance(depthVisualizer);
 
-            Container.Bind<IMeshDatabase>()
+            Container.Bind<IPointCloudDatabase>()
                 .FromInstance(firebaseMeshDatabase);
 
             Container.BindInterfacesAndSelfTo<DepthVisualizerUIPresenter>()

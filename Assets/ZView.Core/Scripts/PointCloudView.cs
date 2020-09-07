@@ -8,11 +8,11 @@ namespace ZView
 {
     [RequireComponent(typeof(MeshFilter))]
     [RequireComponent(typeof(MeshRenderer))]
-    public class DepthMesh : MonoBehaviour
+    public class PointCloudView : MonoBehaviour
     {
         Material material;
 
-        IMeshData meshData;
+        IPointCloudData meshData;
 
         Vector3 position;
         Vector3 rotation;
@@ -35,7 +35,7 @@ namespace ZView
         //     set => SetData(value);
         // }
 
-        public void Initialize(IMeshData data)
+        public void Initialize(IPointCloudData data)
         {
             var mesh = new Mesh();
             gameObject.name = data.Timestamp.ToString();

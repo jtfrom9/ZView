@@ -9,44 +9,44 @@ using UniRx;
 
 namespace ZView
 {
-    public class MeshDataSet: IMeshDataSet
+    public class FirebasePointCloudDataSet: IPointCloudDataSet
     {
         DatabaseReference dataRef;
 
         public string Key { get; private set; }
         public DateTime Timestamp{ get; private set; }
 
-        public MeshDataSet(DatabaseReference dataRef, string key, DateTime timestamp)
+        public FirebasePointCloudDataSet(DatabaseReference dataRef, string key, DateTime timestamp)
         {
             this.dataRef = dataRef;
             this.Key = key;
             this.Timestamp = timestamp;
         }
 
-        void IMeshDataSet.NotifySelected(bool selected)
+        void IPointCloudDataSet.NotifySelected(bool selected)
         {
             if (selected)
             {
-                dataRef.ChildAdded += onMeshDataAdded;
+                dataRef.ChildAdded += onDataAdded;
             }else {
-                dataRef.ChildAdded -= onMeshDataAdded;
+                dataRef.ChildAdded -= onDataAdded;
             }
         }
 
-        ReactiveCollection<IMeshData> meshDataCollection = new ReactiveCollection<IMeshData>();
-        IReadOnlyReactiveCollection<IMeshData> IMeshDataSet.MeshDataCollection { get => meshDataCollection; }
+        ReactiveCollection<IPointCloudData> pcDataCollection = new ReactiveCollection<IPointCloudData>();
+        IReadOnlyReactiveCollection<IPointCloudData> IPointCloudDataSet.PointCloudDataCollection { get => pcDataCollection; }
 
-        async void onMeshDataAdded(object sender, ChildChangedEventArgs args)
+        async void onDataAdded(object sender, ChildChangedEventArgs args)
         {
             var data = await UniTask.Run(() =>
             {
-                return SerializableMeshData.FromJson(args.Snapshot.GetRawJsonValue());
+                return SerializablePointCloudData.FromJson(args.Snapshot.GetRawJsonValue());
             });
-            meshDataCollection.Add(data);
+            pcDataCollection.Add(data);
         }
     }
 
-    public class FirebaseMeshDatabase : MonoBehaviour, IMeshDatabase
+    public class FirebasePointCloudDatabase : MonoBehaviour, IPointCloudDatabase
     {
         [SerializeField] FirebaseManager firebaseManager;
 
@@ -54,8 +54,8 @@ namespace ZView
         DatabaseReference sessionsRef;
         DatabaseReference currentSessionRef;
 
-        ReactiveCollection<IMeshDataSet> meshDataCollection = new ReactiveCollection<IMeshDataSet>();
-        IReadOnlyReactiveCollection<IMeshDataSet> IMeshDatabase.MeshDataSetCollection { get => meshDataCollection; }
+        ReactiveCollection<IPointCloudDataSet> pcDataSetCollection = new ReactiveCollection<IPointCloudDataSet>();
+        IReadOnlyReactiveCollection<IPointCloudDataSet> IPointCloudDatabase.PointCloudDataSetCollection { get => pcDataSetCollection; }
 
         void onSessionAdded(object sneder, ChildChangedEventArgs args)
         {
@@ -66,7 +66,7 @@ namespace ZView
             var dt = new DateTime();
             System.DateTime.TryParse(timestamp, out dt);
             var dataRef = rootRef.Child("meshes").Child(key);
-            meshDataCollection.Add(new MeshDataSet(dataRef, key, dt));
+            pcDataSetCollection.Add(new FirebasePointCloudDataSet(dataRef, key, dt));
         }
 
         void onSessionRemoved(object sneder, ChildChangedEventArgs args)

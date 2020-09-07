@@ -11,19 +11,19 @@ namespace ZView
 {
     public interface IDepthVisualizer
     {
-        void Add(IMeshData data, IMeshDataUIView uiView);
+        void Add(IPointCloudData data, IMeshDataUIView uiView);
     }
 
     public class DepthVisualizer : MonoBehaviour, IDepthVisualizer, IMeshDataCollectionListUIView
     {
-        [SerializeField] GameObject depthMeshPrefab;
+        [SerializeField] GameObject pointCloudPrefab;
 
         Subject<MeshDataSetTag> selectedSubject = new Subject<MeshDataSetTag>();
 
-        void IDepthVisualizer.Add(IMeshData data, IMeshDataUIView uiView)
+        void IDepthVisualizer.Add(IPointCloudData data, IMeshDataUIView uiView)
         {
             Debug.Log(data.Timestamp);
-            var depthMesh = Instantiate(depthMeshPrefab, this.transform).GetComponent<DepthMesh>();
+            var depthMesh = Instantiate(pointCloudPrefab, this.transform).GetComponent<PointCloudView>();
             depthMesh.Initialize(data);
 
             uiView.Enabled.Subscribe(enabled => {

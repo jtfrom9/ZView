@@ -13,24 +13,24 @@ namespace ZView
 {
     public class DepthVisualizerUIPresenter: IInitializable
     {
-        IMeshDatabase meshDatabase;
+        IPointCloudDatabase pcDatabase;
         IDepthVisualizer depthVisualizer;
         IMeshDataCollectionListUIView dataListCollectionUIView;
         IMeshDataListUIView dataListUIView;
 
         IDisposable currentDataSetModelSubscriber;
-        IMeshDataSet currentDataSet;
+        IPointCloudDataSet currentDataSet;
 
         CompositeDisposable compositeDisposable = new CompositeDisposable();
         // CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
 
         // ctor inject
-        public DepthVisualizerUIPresenter(IMeshDatabase database,
+        public DepthVisualizerUIPresenter(IPointCloudDatabase database,
             IDepthVisualizer depthVisualizer,
             IMeshDataCollectionListUIView collectionListUIView,
             IMeshDataListUIView dataListUIView)
         {
-            this.meshDatabase = database;
+            this.pcDatabase = database;
             this.depthVisualizer = depthVisualizer;
             this.dataListCollectionUIView = collectionListUIView;
             this.dataListUIView = dataListUIView;
@@ -39,7 +39,7 @@ namespace ZView
         void IInitializable.Initialize() // IInitializable
         {
             // Model -> View
-            meshDatabase.MeshDataSetCollection.ObserveAdd().Subscribe(e => {
+            pcDatabase.PointCloudDataSetCollection.ObserveAdd().Subscribe(e => {
                 var set = e.Value;
                 Debug.Log($"[Presenter] DataSet Added: {set.Key}, {set.Timestamp.ToString()}");
                 dataListCollectionUIView.Add(new MeshDataSetTag
@@ -52,13 +52,13 @@ namespace ZView
             // Model <- View
             dataListCollectionUIView.Selected.Subscribe(tag =>
             {
-                IMeshDataSet dataSet;
+                IPointCloudDataSet dataSet;
                 Debug.Log($"[Presenter] DataSet Selected: {tag.key}, {tag.name}");
                 if(tag==null) {
                     dataSet = null;
                 } else
                 {
-                    dataSet = meshDatabase.MeshDataSetCollection.FirstOrDefault(set => set.Key == tag.key);
+                    dataSet = pcDatabase.PointCloudDataSetCollection.FirstOrDefault(set => set.Key == tag.key);
                 }
                 if (currentDataSet != dataSet)
                 {
@@ -70,16 +70,16 @@ namespace ZView
                     Debug.Log($"[Presenter] dataSet: {dataSet}");
                     if (dataSet != null)
                     {
-                        currentDataSetModelSubscriber = dataSet.MeshDataCollection.ObserveAdd().Subscribe(e =>
+                        currentDataSetModelSubscriber = dataSet.PointCloudDataCollection.ObserveAdd().Subscribe(e =>
                         {
-                            var meshData = e.Value;
-                            Debug.Log($"[Presenter] data added: {meshData.ToString()}");
+                            var pCloud = e.Value;
+                            Debug.Log($"[Presenter] data added: {pCloud.ToStringAsPointCloud()}");
 
                             // add to list UI
-                            var uiView = dataListUIView.Add(meshData.Key, meshData.Timestamp.ToString());
+                            var uiView = dataListUIView.Add(pCloud.Key, pCloud.Timestamp.ToString());
 
                             // add to Visualizer
-                            depthVisualizer.Add(meshData, uiView);
+                            depthVisualizer.Add(pCloud, uiView);
                         });
                     }
                     currentDataSet?.NotifySelected(false);

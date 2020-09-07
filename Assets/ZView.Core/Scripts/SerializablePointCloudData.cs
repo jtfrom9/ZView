@@ -6,7 +6,7 @@ using UnityEngine;
 namespace ZView
 {
     [SerializeField]
-    public class SerializableMeshData : ISerializationCallbackReceiver, IMeshData
+    public class SerializablePointCloudData : ISerializationCallbackReceiver, IPointCloudData
     {
         [SerializeField]
         public List<Vector3> vertices = new List<Vector3>();
@@ -30,11 +30,11 @@ namespace ZView
 
         public DateTime Timestamp { get { return timestamp_d; } }
 
-        List<Vector3> IMeshData.Vertices { get => vertices; }
-        Vector3 IMeshData.Position { get => position; }
-        Vector3 IMeshData.Rotation { get => rotation; }
+        List<Vector3> IPointCloudData.Vertices { get => vertices; }
+        Vector3 IPointCloudData.Position { get => position; }
+        Vector3 IPointCloudData.Rotation { get => rotation; }
 
-        public SerializableMeshData()
+        public SerializablePointCloudData()
         {
             this.timestamp_d = DateTime.Now;
             this.timestamp = timestamp_d.ToString();
@@ -58,9 +58,9 @@ namespace ZView
             return JsonUtility.ToJson(this, pretty);
         }
 
-        public static SerializableMeshData FromJson(string json)
+        public static SerializablePointCloudData FromJson(string json)
         {
-            return JsonUtility.FromJson<SerializableMeshData>(json);
+            return JsonUtility.FromJson<SerializablePointCloudData>(json);
         }
     }
 }
