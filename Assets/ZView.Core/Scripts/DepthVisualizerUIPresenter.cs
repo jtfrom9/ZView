@@ -15,8 +15,8 @@ namespace ZView
     {
         IPointCloudDatabase pcDatabase;
         IDepthVisualizer depthVisualizer;
-        IMeshDataCollectionListUIView dataListCollectionUIView;
-        IMeshDataListUIView dataListUIView;
+        IPointCloudDataCollectionListUIView dataListCollectionUIView;
+        IPointCloudDataListUIView dataListUIView;
 
         IDisposable currentDataSetModelSubscriber;
         IPointCloudDataSet currentDataSet;
@@ -27,8 +27,8 @@ namespace ZView
         // ctor inject
         public DepthVisualizerUIPresenter(IPointCloudDatabase database,
             IDepthVisualizer depthVisualizer,
-            IMeshDataCollectionListUIView collectionListUIView,
-            IMeshDataListUIView dataListUIView)
+            IPointCloudDataCollectionListUIView collectionListUIView,
+            IPointCloudDataListUIView dataListUIView)
         {
             this.pcDatabase = database;
             this.depthVisualizer = depthVisualizer;
@@ -42,7 +42,7 @@ namespace ZView
             pcDatabase.PointCloudDataSetCollection.ObserveAdd().Subscribe(e => {
                 var set = e.Value;
                 Debug.Log($"[Presenter] DataSet Added: {set.Key}, {set.Timestamp.ToString()}");
-                dataListCollectionUIView.Add(new MeshDataSetTag
+                dataListCollectionUIView.Add(new PointCloudDataSetTag
                 {
                     key = set.Key,
                     name = set.Timestamp.ToString()

@@ -7,7 +7,7 @@ namespace ZView
     public class DepthVisualizerInstaller : MonoInstaller
     {
         [SerializeField] FirebasePointCloudDatabase firebaseMeshDatabase;
-        [SerializeField] MeshDataListPanelView dataListView;
+        [SerializeField] PointCloudDataListPanelUIView dataListView;
 
         public override void InstallBindings()
         {
@@ -22,7 +22,7 @@ namespace ZView
             Container.BindInterfacesAndSelfTo<DepthVisualizerUIPresenter>()
                 .AsSingle();
 
-            Container.Bind<IMeshDataListUIView>()
+            Container.Bind<IPointCloudDataListUIView>()
                 .FromInstance(dataListView);
         }
     }

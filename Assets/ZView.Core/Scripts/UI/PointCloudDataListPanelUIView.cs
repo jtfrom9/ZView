@@ -8,15 +8,15 @@ using Zenject;
 
 namespace ZView
 {
-    public class MeshDataListPanelView : MonoBehaviour, IMeshDataListUIView
+    public class PointCloudDataListPanelUIView : MonoBehaviour, IPointCloudDataListUIView
     {
         [SerializeField] ScrollRectController scrollRectController;
 
         [SerializeField] GameObject depthMeshItemPanelPrefab;
 
-        public void OnSelected(MeshDataPanelView child, RectTransform rectTransform)
+        public void OnSelected(PointCloudDataPanelUIView child, RectTransform rectTransform)
         {
-            foreach (var c in GetComponentsInChildren<MeshDataPanelView>())
+            foreach (var c in GetComponentsInChildren<PointCloudDataPanelUIView>())
             {
                 if (c != child)
                     c.ClearSelected();
@@ -26,9 +26,9 @@ namespace ZView
             }
         }
 
-        IMeshDataUIView IMeshDataListUIView.Add(string key, string text)
+        IPointCloudDataUIView IPointCloudDataListUIView.Add(string key, string text)
         {
-            var view = Instantiate(depthMeshItemPanelPrefab).GetComponent<MeshDataPanelView>();
+            var view = Instantiate(depthMeshItemPanelPrefab).GetComponent<PointCloudDataPanelUIView>();
             view.Initialize(key, text);
             view.transform.SetParent(transform, false);
             return view;

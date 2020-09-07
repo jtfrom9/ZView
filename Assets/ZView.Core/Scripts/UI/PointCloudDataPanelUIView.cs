@@ -7,7 +7,7 @@ using UniRx;
 
 namespace ZView
 {
-    public class MeshDataPanelView : MonoBehaviour, IMeshDataUIView
+    public class PointCloudDataPanelUIView : MonoBehaviour, IPointCloudDataUIView
     {
         [SerializeField] Toggle visibleToggle = default;
         [SerializeField] Text text = default;
@@ -15,7 +15,7 @@ namespace ZView
         [SerializeField] Button jumpButton = default;
 
         RectTransform rectTransform;
-        MeshDataListPanelView parent;
+        PointCloudDataListPanelUIView parent;
         bool selected = false;
 
         Subject<bool> enabledSubject = new Subject<bool>();
@@ -24,10 +24,10 @@ namespace ZView
         Subject<Unit> jumpSubject = new Subject<Unit>();
 
         public string Key { get; private set; }
-        IObservable<bool> IMeshDataUIView.Enabled { get => enabledSubject; }
-        IObservable<bool> IMeshDataUIView.Selected { get => selectedSubject; }
-        IObservable<Unit> IMeshDataUIView.OnModifyPose { get => modifySubject; }
-        IObservable<Unit> IMeshDataUIView.OnJump { get => jumpSubject; }
+        IObservable<bool> IPointCloudDataUIView.Enabled { get => enabledSubject; }
+        IObservable<bool> IPointCloudDataUIView.Selected { get => selectedSubject; }
+        IObservable<Unit> IPointCloudDataUIView.OnModifyPose { get => modifySubject; }
+        IObservable<Unit> IPointCloudDataUIView.OnJump { get => jumpSubject; }
 
         void onVisibleChanged(bool v)
         {
@@ -39,7 +39,7 @@ namespace ZView
         void Start()
         {
             rectTransform = GetComponent<RectTransform>();
-            parent = transform.parent.gameObject.GetComponent<MeshDataListPanelView>();
+            parent = transform.parent.gameObject.GetComponent<PointCloudDataListPanelUIView>();
             // bg = GetComponent<Image>();
             visibleToggle.OnValueChangedAsObservable()
                 .Subscribe(v => {

@@ -9,18 +9,28 @@ using UniRx;
 
 namespace ZView
 {
-    public interface IDepthVisualizer
+    public interface IPointCloudDataUIView
     {
-        void Add(IPointCloudData data, IMeshDataUIView uiView);
+        string Key { get; }
+
+        IObservable<bool> Enabled { get; }
+        IObservable<bool> Selected { get; }
+        IObservable<Unit> OnModifyPose { get; }
+        IObservable<Unit> OnJump { get; }
     }
 
-    public class DepthVisualizer : MonoBehaviour, IDepthVisualizer, IMeshDataCollectionListUIView
+    public interface IDepthVisualizer
+    {
+        void Add(IPointCloudData data, IPointCloudDataUIView uiView);
+    }
+
+    public class DepthVisualizer : MonoBehaviour, IDepthVisualizer, IPointCloudDataCollectionListUIView
     {
         [SerializeField] GameObject pointCloudPrefab;
 
-        Subject<MeshDataSetTag> selectedSubject = new Subject<MeshDataSetTag>();
+        Subject<PointCloudDataSetTag> selectedSubject = new Subject<PointCloudDataSetTag>();
 
-        void IDepthVisualizer.Add(IPointCloudData data, IMeshDataUIView uiView)
+        void IDepthVisualizer.Add(IPointCloudData data, IPointCloudDataUIView uiView)
         {
             Debug.Log(data.Timestamp);
             var depthMesh = Instantiate(pointCloudPrefab, this.transform).GetComponent<PointCloudView>();
@@ -46,11 +56,11 @@ namespace ZView
         }
 
         // temporary solution
-        void IMeshDataCollectionListUIView.Add(MeshDataSetTag tag)
+        void IPointCloudDataCollectionListUIView.Add(PointCloudDataSetTag tag)
         {
             selectedSubject.OnNext(tag);
         }
-        IObservable<MeshDataSetTag> IMeshDataCollectionListUIView.Selected { get => selectedSubject; }
+        IObservable<PointCloudDataSetTag> IPointCloudDataCollectionListUIView.Selected { get => selectedSubject; }
 
     }
 }
